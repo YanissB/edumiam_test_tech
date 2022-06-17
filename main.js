@@ -57,11 +57,16 @@ fs.readFile('extract_caspratique_Parcours_apprenants.json', 'utf-8', (err, jsonS
             const data = JSON.parse(jsonString)
             
             learnerIdArr = []
-            
+            summQuotedArr = []
 
-            for (let i = 0; 0 < data.length; i++){
-                data.map(learnerIdArr.push(data[i].LearnerId))
+            for (let i = 0; i < data.length; i++){
+                if (data[i] === data[i+1]){
+                    continue
+                } else {
+                    learnerIdArr.push(data[i].LearnerId)
+                }
             }
+            
             console.log(learnerIdArr)
         } catch (err) {
             console.log('Error parsing JSON ', err)
