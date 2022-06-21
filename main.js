@@ -40,8 +40,40 @@ CSVToJSON().fromFile('extract_caspratique_Parcours_apprenants.csv')
     })
 
     
-// Parse JSON and select what we need
-let result = []
+// Parse JSON and select LearnerId
+
+const getLearnerId = (data) => {
+    let learnerIdArr = data.map(function(Learner){
+        return Learner.LearnerId
+    })
+    let uniqueLearnerIdArr = [...new Set(learnerIdArr)]
+    console.log("cc")
+    return uniqueLearnerIdArr
+}
+
+
+const getTotalQuoted = (uniqueLearnerId, data) => {
+    summ = 0
+    totalQuotedArr = []
+    console.log("cc getTotalQuoted")
+
+    for (let i = 0; i < data.length; i++){
+        for (let j = 0; i < uniqueLearnerId; j++){
+            console.log("j'existe")
+            if (uniqueLearnerId[i] == data[j].LearnerId){
+                console.log("fais la somme")
+                summ += data[j].QuotedPrice 
+            } else {
+                
+                console.log("Je me push et reset")
+                totalQuotedArr.push(summ)
+                summ = 0
+            }
+        }
+    }
+    return totalQuotedArr
+}
+
 
 class LeanrerIdTotalQuoted {
     constructor(LearnerId, TotalQuoted ){
@@ -49,29 +81,20 @@ class LeanrerIdTotalQuoted {
         this.TotalQuoted = TotalQuoted
     }
 }
+
+
 fs.readFile('extract_caspratique_Parcours_apprenants.json', 'utf-8', (err, jsonString) => {
     if (err) {
         console.log(err)
     } else {
         try{
             const data = JSON.parse(jsonString)
-            
-            learnerIdArr = []
-            summQuotedArr = []
-
-            for (let i = 0; i < data.length; i++){
-                if (data[i] === data[i+1]){
-                    continue
-                } else {
-                    learnerIdArr.push(data[i].LearnerId)
-                }
-            }
-            
-            console.log(learnerIdArr)
+            const uniqueLearnerId = getLearnerId(data) 
+            const totalQuoted = getTotalQuoted(uniqueLearnerId, data)  
+            console.log(totalQuoted)
         } catch (err) {
             console.log('Error parsing JSON ', err)
         }
-        
     }
-}) 
+})
 
